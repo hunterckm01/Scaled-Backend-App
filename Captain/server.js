@@ -3,7 +3,7 @@ const app = require('./app');
 
 const server = http.createServer(app);
 
-server.listen(3000, ()=>{
-    console.log("User service is running on port 3000");
+server.listen(process.env.PORT, ()=>{
+    console.log("captain service is running on port 5001");
 })
 
