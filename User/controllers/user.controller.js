@@ -82,7 +82,7 @@ module.exports.logout = async(req, res) => {
 
 module.exports.profile = async(req, res) => {
     try{
-        console.log("Profile route hit");
+        // console.log("Profile route hit");
         res.send(req.user);
     }
     catch(err){
