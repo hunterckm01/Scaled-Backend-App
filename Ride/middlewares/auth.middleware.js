@@ -10,7 +10,7 @@ module.exports.userAuth = async(req, res, next) => {
                 message: "Unauthorized"
         })}
         
-        console.log(token);
+        // console.log(token);
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
         
         // console.log("Reached after decoded");

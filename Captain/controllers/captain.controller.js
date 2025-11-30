@@ -7,6 +7,8 @@ const {
   publishToQueue,
 } = require("../service/rabbit.service.js");
 
+const pendingRequests = [];
+
 module.exports.register = async(req, res) => {
     try{
       const { name, email, password } = req.body;
@@ -110,7 +112,30 @@ module.exports.toggleAvailablity = async (req, res) => {
   }
 };
 
+module.exports.waitForNewRide = async(req, res) => {
+  try{
+    console.log("Waiting for new ride");
+    req.setTimeout(30000, ()=>{
+      res.status(204).end();
+    })
+
+    console.log("After 30 seconds");
+    pendingRequests.push(res);
+  }
+  catch(err){
+    res.status(500).json({
+      error: err.messaage
+    })
+  }
+}
+
 subscribeToQueue("new-ride", (data) => {
-    const dataGot = JSON.parse(data);
-    console.log(dataGot);
+    const rideData = JSON.parse(data);
+
+    pendingRequests.forEach(res => {
+      console.log(res);
+      res.json({data: rideData});
+    });
+
+    pendingRequests.length = 0;
 })
