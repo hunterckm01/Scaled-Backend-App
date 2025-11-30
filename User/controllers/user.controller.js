@@ -36,6 +36,7 @@ module.exports.register = async(req, res) => {
 
 module.exports.login = async(req, res) => {
     try{
+        // console.log("Request getting");
         const {email, password} = req.body;
         const user = await userModel.findOne({email}).select("+password");
 

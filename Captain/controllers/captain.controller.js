@@ -110,6 +110,7 @@ module.exports.toggleAvailablity = async (req, res) => {
   }
 };
 
-// subscribeToQueue("new-ride", (data) => {
-//     console.log(data);
-// })
+subscribeToQueue("new-ride", (data) => {
+    const dataGot = JSON.parse(data);
+    console.log(dataGot);
+})

@@ -8,4 +8,4 @@ app.use('/ride', expressProxy('http://localhost:6001'));
 
 app.listen(3001, ()=>{
     console.log("Gateway is Running on 3001");
-})
+}) 

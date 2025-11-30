@@ -1,22 +1,27 @@
-const { default: axios } = require('axios');
-const jwt = import('jsonwebtoken')
+const axios = require('axios');
+const jwt = require('jsonwebtoken');
 
 module.exports.userAuth = async(req, res, next) => {
     try{
-        const token = req.cookies || req.headers.authorization.split(' ')[1];
-        if(!token)
+        const token = req.cookies.token || req.headers.authorization.split(' ')[1];
+        // console.log(token);
+        if(!token){
             return res.status(401).json({
                 message: "Unauthorized"
-        })
-
+        })}
+        
+        console.log(token);
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
+        
+        // console.log("Reached after decoded");
 
-        const response = await axios.get(`${BASE_URL}/user/profile`, {
+        const response = await axios.get(`${process.env.BASE_URL}/user/profile`, {
             headers: {
                 Authorization: `Bearer ${token}`
             }
         });
 
+        // console.log("Response will be generated");
         const user = response.data;
         if(!user){
             return res.status(401).json({
@@ -25,6 +30,7 @@ module.exports.userAuth = async(req, res, next) => {
         }
 
         req.user = user;
+        // console.log("Next function is called")
         next();
     }
     catch(error){

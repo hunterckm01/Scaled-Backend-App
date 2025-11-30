@@ -3,15 +3,17 @@ const rideModel = require('../models/ride.model')
 module.exports.createRide = async(req, res, next) => {
     try{
         const {pickup, destination}  = req.body;
+        // console.log(req.user._id);
         const newRide = new rideModel({
             user: req.user._id,
             pickup,
             destination
         });
 
-        publishToQueue("new-ride", JSON.stringify(newRide));
- 
         await newRide.save();
+        // console.log("Reached here");
+        publishToQueue("new-ride", JSON.stringify(newRide));
+        res.send(newRide);
     }
     catch(err){
         return res.status(500).json({

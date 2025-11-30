@@ -4,7 +4,7 @@ const rideSchema = new mongoose.Schema({
     driver: {
         type: mongoose.Schema.Types.ObjectId
     },
-    rider: {
+    user: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'user',
         required: true
