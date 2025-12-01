@@ -2,6 +2,9 @@ const userModel = require('../models/user.model');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const blacklistTokenModel = require('../models/blacklisttoken.model')
+const {subscribeToQueue} = require('../service/rabbit.service');
+const EventEmitter = require('events');
+const rideEventEmitter = new EventEmitter();
 
 module.exports.register = async(req, res) => {
     try{
@@ -53,7 +56,7 @@ module.exports.login = async(req, res) => {
                 message: "Password Doesn't matched"
             })
         }
-
+        console.log(user._id);
         const token = jwt.sign({id: user._id}, process.env.JWT_SECRET, {expiresIn: 3600});
         
         // It's necessary to not share the password 
@@ -83,7 +86,7 @@ module.exports.logout = async(req, res) => {
 
 module.exports.profile = async(req, res) => {
     try{
-        // console.log("Profile route hit");
+        console.log("Profile route hit");
         res.send(req.user);
     }
     catch(err){
@@ -92,3 +95,24 @@ module.exports.profile = async(req, res) => {
         })
     }
 }
+
+module.exports.acceptedRide = async(req, res) => {
+    try{
+        rideEventEmitter.once('ride-accepted', (data)=>{
+            res.send(data);
+        })
+
+        setTimeout(()=>{
+            res.status(204).send();
+        }, 30000);
+    }
+    catch(err){
+        return res.status({error: err.message});
+    }
+}
+
+subscribeToQueue('ride-accepted', (msg) => {
+    // console.log("Request from subscribe");
+    const data = JSON.parse(msg);
+    rideEventEmitter.emit('ride-accepted', data);
+})

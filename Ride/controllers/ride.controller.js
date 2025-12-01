@@ -21,3 +21,30 @@ module.exports.createRide = async(req, res, next) => {
         })
     }
 }
+
+module.exports.acceptRide = async(req, res, next) => {
+    try{
+        const {rideId} = req.query
+        console.log("Reached here");
+        const ride = await rideModel.findById(rideId);
+        
+        if(!ride){
+            return res.status(404).json({
+                message: "Ride Not Found"
+            })
+        }
+    
+        ride.status = 'accepted';
+        await ride.save();
+        
+        publishToQueue('ride-accepted', JSON.stringify(ride));
+        
+        res.send(ride);
+    }
+    catch(err){
+        console.log("Error Recieved");
+        return res.status(500).json({
+            error: err.message
+        })
+    }
+}

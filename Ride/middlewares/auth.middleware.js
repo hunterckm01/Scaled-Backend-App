@@ -13,15 +13,16 @@ module.exports.userAuth = async(req, res, next) => {
         // console.log(token);
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
         
-        // console.log("Reached after decoded");
-
+        console.log(decoded);
+        console.log("Sent for response");
         const response = await axios.get(`${process.env.BASE_URL}/user/profile`, {
             headers: {
                 Authorization: `Bearer ${token}`
             }
         });
-
-        // console.log("Response will be generated");
+        
+        console.log(response);
+        console.log("Response will be generated");
         const user = response.data;
         if(!user){
             return res.status(401).json({
@@ -30,7 +31,7 @@ module.exports.userAuth = async(req, res, next) => {
         }
 
         req.user = user;
-        // console.log("Next function is called")
+        console.log("Next function is called")
         next();
     }
     catch(error){
@@ -46,7 +47,8 @@ module.exports.captainAuth = async(req, res, next) => {
 
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
-        const response = await axios.get(`${BASE_URL}/captain/profile`, {
+        // console.log("Reached till here");
+        const response = await axios.get(`${process.env.BASE_URL}/captain/profile`, {
             headers: {Authorization: `Bearer ${token}`}
         })
 
@@ -58,9 +60,10 @@ module.exports.captainAuth = async(req, res, next) => {
 
         req.captain = captain;  
         next();
+        console.log("Next function called");
     }
     catch(err){
-        res.status(200).json({
+        res.status(500).json({
             message: err.message
         })
     }

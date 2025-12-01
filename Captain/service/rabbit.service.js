@@ -5,14 +5,19 @@ let connection, channel;
 // let RABBIT_URI = process.env.RABBIT_URL;
 async function connect(){
     try{
+        // console.log("Connecting…", new Date().toISOString());
         connection = await amqp.connect(process.env.RABBIT_URL);
         channel = await connection.createChannel();
-        // console.log("Here");
         console.log("Connected to rabbit mq");
     }
     catch(err){
         console.log(err)
     }
+}
+
+async function initRabbitMQ(){
+    if(!channel)
+        await connect();
 }
 
 async function subscribeToQueue(queueName, callback){
@@ -43,5 +48,8 @@ async function publishToQueue(queueName, data){
 }
 
 module.exports = {
-    subscribeToQueue, publishToQueue, connect
-}
+  subscribeToQueue,
+  publishToQueue,
+  connect,
+  initRabbitMQ,
+};

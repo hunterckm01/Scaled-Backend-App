@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-function connect(){
+function connectDB(){
     mongoose.connect(process.env.MONGO_URL)
     .then(()=>{
         console.log("User DB connected successfully");
@@ -8,4 +8,4 @@ function connect(){
     .catch((err)=>console.log(err))
 }
 
-module.exports = connect;
+module.exports = connectDB;

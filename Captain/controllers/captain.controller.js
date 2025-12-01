@@ -129,13 +129,27 @@ module.exports.waitForNewRide = async(req, res) => {
   }
 }
 
-subscribeToQueue("new-ride", (data) => {
+  subscribeToQueue("new-ride", (data) => {
     const rideData = JSON.parse(data);
-
+    
     pendingRequests.forEach(res => {
       console.log(res);
       res.json({data: rideData});
     });
-
+    
     pendingRequests.length = 0;
-})
+  })
+
+// module.exports.initRideConsumer = () => {
+//   console.log(new Date().toISOString())
+  // subscribeToQueue("new-ride", (data) => {
+  //   const rideData = JSON.parse(data);
+    
+  //   pendingRequests.forEach(res => {
+  //     console.log(res);
+  //     res.json({data: rideData});
+  //   });
+    
+  //   pendingRequests.length = 0;
+  // })
+// }
